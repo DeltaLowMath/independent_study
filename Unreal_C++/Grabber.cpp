@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 
 #include "Grabber.h"
 
@@ -7,23 +5,16 @@
 #include "DrawDebugHelpers.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 
-// Sets default values for this component's properties
 UGrabber::UGrabber()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-
-// Called when the game starts
 void UGrabber::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-
-// Called every frame
 void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
@@ -84,6 +75,21 @@ void UGrabber::Release()
 	UE_LOG(LogTemp, Display, TEXT("Released Grabbable"));
 }
 
+bool UGrabber::GetGrabbableInReach(FHitResult& OutGrabbable) const
+{
+	FVector Start = GetComponentLocation();
+	FVector End = Start + GetForwardVector() * ReachDistance;
+	FCollisionShape SenseTouch = FCollisionShape::MakeSphere(GrabRadius);
+
+	return GetWorld()->SweepSingleByChannel(
+		OutGrabbable,
+		Start, End,
+		FQuat::Identity,
+		ECC_GameTraceChannel2,
+		SenseTouch
+	);
+}
+
 UPhysicsHandleComponent* UGrabber::GetPhysicsHandle() const
 {
 	UPhysicsHandleComponent* Result = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
@@ -92,23 +98,6 @@ UPhysicsHandleComponent* UGrabber::GetPhysicsHandle() const
 		UE_LOG(LogTemp, Error, TEXT("Grabber Requires a UPhysicsHandleComponent."));
 	}
 	return Result;
-}
-
-bool UGrabber::GetGrabbableInReach(FHitResult& OutGrabbable) const
-{
-	FVector Start = GetComponentLocation();
-	FVector End = Start + GetForwardVector() * MaxGrabDistance;
-	DrawDebugLine(GetWorld(), Start, End, FColor::Red);
-	DrawDebugSphere(GetWorld(), End, 10, 16, FColor::Red, false, 10);
-
-	FCollisionShape SenseTouch = FCollisionShape::MakeSphere(GrabRadius);
-	return GetWorld()->SweepSingleByChannel(
-		OutGrabbable,
-		Start, End,
-		FQuat::Identity,
-		ECC_GameTraceChannel2,
-		SenseTouch
-	);
 }
 
 void UGrabber::DebugReach()
@@ -126,7 +115,15 @@ void UGrabber::DebugReach()
 	{
 		UE_LOG(LogTemp, Display, TEXT("No actor hit."));
 	}
+	FVector Start = GetComponentLocation();
+	FVector End = Start + GetForwardVector() * ReachDistance;
+	DrawDebugLine(GetWorld(), Start, End, FColor::Red);
+	DrawDebugSphere(GetWorld(), End, 10, 16, FColor::Red, false, 10);
+}
+
+void UGrabber::DebugGrabAim()
+{
 	FRotator CameraRotation = GetComponentRotation();
-	FString RotationString = CameraRotation.ToCompactString();
-	UE_LOG(LogTemp, Display, TEXT("Grabber Rotation: %s"), *RotationString);
+	FString RotationLog = CameraRotation.ToCompactString();
+	UE_LOG(LogTemp, Display, TEXT("Grabber Rotation: %s"), *RotationLog);
 }

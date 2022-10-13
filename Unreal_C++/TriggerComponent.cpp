@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 
 #include "TriggerComponent.h"
 
@@ -56,6 +54,5 @@ AActor* UTriggerComponent::GetAcceptableActor() const
 			return Actor;
 		}
 	}
-
 	return nullptr;
 }
