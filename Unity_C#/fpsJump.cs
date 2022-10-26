@@ -4,43 +4,60 @@ using UnityEngine;
 
 public class fpsJump : MonoBehaviour
 {
-    Rigidbody rb;
-
-    //public Transform groundChecker;
-    //public LayerMask groundLayer;
-
-    //public float checkRadius = 0.1f;
+    Rigidbody playerBody;
     public float jumpForce = 0.0f;
+    float groundCheckRadius = 0.1f;
+    public LayerMask groundLayer;
+    public Transform playerFeet;
+    public bool singleJump;
 
-    // Start is called before the first frame update
+
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        playerBody = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown (KeyCode.Space)) //&& IsOnGround())
+        if (singleJump)
         {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            GroundedJump();
+        }
+        else
+        {
+            FlyJump();
         }
 
-        /*
-        bool IsOnGround()
+    }
+
+    void FlyJump()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            Collider[] colliders = Physics.OverlapSphere(groundChecker.position, checkRadius, groundLayer);
-
-            if (colliders.Length > 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            playerBody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
-        */
+    }
 
+    void GroundedJump()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && PlayerIsOnGround())
+        {
+            playerBody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        }
+    }
+
+    bool PlayerIsOnGround()
+    {
+        Collider[] colliders = Physics.OverlapSphere(playerFeet.position, groundCheckRadius, groundLayer);
+
+        if (colliders.Length > 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }
