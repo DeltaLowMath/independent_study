@@ -16,6 +16,29 @@ public class SkillLevelCalculator : MonoBehaviour
     private float lerpTimer;
     private float delayTimer;
 
+    [Header("Xp Bar")]
+    public Image xpBar;
+    public Image backXpBar;
+    public int fillTime;
+    public int delay;
+
+    [Header("Entries")]
+    public TMPro.TMP_Dropdown dropSelect;
+    public TMP_InputField xpEntry;
+    public bool logged = false;
+
+    [Header("Architect Data")]
+    public int architectLevel;
+    public float architectReqXp;
+    public float architectCurrentXp;
+    public float architectTotalXp;
+
+    [Header("Archivist Data")]
+    public int archivistLevel;
+    public float archivistReqXp;
+    public float archivistCurrentXp;
+    public float archivistTotalXp;
+
     [Header("Astrologer Data")]
     public int astrologerLevel;
     public float astrologerReqXp;
@@ -40,22 +63,31 @@ public class SkillLevelCalculator : MonoBehaviour
     public float summonerCurrentXp;
     public float summonerTotalXp;
 
+    [Header("Surveyor Data")]
+    public int surveyorLevel;
+    public float surveyorReqXp;
+    public float surveyorCurrentXp;
+    public float surveyorTotalXp;
+
     [Header("Warlock Data")]
     public int warlockLevel;
     public float warlockReqXp;
     public float warlockCurrentXp;
     public float warlockTotalXp;
 
-    [Header("Xp Bar")]
-    public Image xpBar;
-    public Image backXpBar;
-    public int fillTime;
-    public int delay;
+    [Header("Architect UI")]
+    public Image xpBarArchitect;
+    public Image backXpBarArchitect;
+    public TextMeshProUGUI levelTextArchitect;
+    public TextMeshProUGUI totalXpTextArchitect;
+    public TextMeshProUGUI xpThisLevelArchitect;
 
-    [Header("UI")]
-    public TextMeshProUGUI levelText;
-    public TextMeshProUGUI totalXpText;
-    public TextMeshProUGUI xpThisLevel;
+    [Header("Archivist UI")]
+    public Image xpBarArchivist;
+    public Image backXpBarArchivist;
+    public TextMeshProUGUI levelTextArchivist;
+    public TextMeshProUGUI totalXpTextArchivist;
+    public TextMeshProUGUI xpThisLevelArchivist;
 
     [Header("Astologer UI")]
     public Image xpBarAstrologer;
@@ -85,6 +117,13 @@ public class SkillLevelCalculator : MonoBehaviour
     public TextMeshProUGUI totalXpTextSummoner;
     public TextMeshProUGUI xpThisLevelSummoner;
 
+    [Header("Surveyor UI")]
+    public Image xpBarSurveyor;
+    public Image backXpBarSurveyor;
+    public TextMeshProUGUI levelTextSurveyor;
+    public TextMeshProUGUI totalXpTextSurveyor;
+    public TextMeshProUGUI xpThisLevelSurveyor;
+
     [Header("Warlock UI")]
     public Image xpBarWarlock;
     public Image backXpBarWarlock;
@@ -92,10 +131,10 @@ public class SkillLevelCalculator : MonoBehaviour
     public TextMeshProUGUI totalXpTextWarlock;
     public TextMeshProUGUI xpThisLevelWarlock;
 
-    [Header("Entries")]
-    public TMPro.TMP_Dropdown dropSelect;
-    public TMP_InputField xpEntry;
-    public bool logged = false;
+    [Header("UI")]
+    public TextMeshProUGUI levelText;
+    public TextMeshProUGUI totalXpText;
+    public TextMeshProUGUI xpThisLevel;
 
     void Start()
     {
@@ -114,21 +153,33 @@ public class SkillLevelCalculator : MonoBehaviour
             totalXpText.text = "Total XP " + totalXp;
             if (dropSelect.value == 1)
             {
-                astrologerTotalXp = totalXp;
+                architectTotalXp = totalXp;
             }
             else if (dropSelect.value == 2)
             {
-                enchanterTotalXp = totalXp;
+                archivistTotalXp = totalXp;
             }
             else if (dropSelect.value == 3)
             {
-                gardenerTotalXp = totalXp;
+                astrologerTotalXp = totalXp;
             }
             else if (dropSelect.value == 4)
             {
-                summonerTotalXp = totalXp;
+                enchanterTotalXp = totalXp;
             }
             else if (dropSelect.value == 5)
+            {
+                gardenerTotalXp = totalXp;
+            }
+            else if (dropSelect.value == 6)
+            {
+                summonerTotalXp = totalXp;
+            }
+            else if (dropSelect.value == 7)
+            {
+                surveyorTotalXp = totalXp;
+            }
+            else if (dropSelect.value == 8)
             {
                 warlockTotalXp = totalXp;
             }
@@ -138,29 +189,47 @@ public class SkillLevelCalculator : MonoBehaviour
         {
             if (dropSelect.value == 1)
             {
+                architectLevel = level;
+                architectCurrentXp = currentXp;
+                architectReqXp = reqXp;
+            }
+            else if (dropSelect.value == 2)
+            {
+                archivistLevel = level;
+                archivistCurrentXp = currentXp;
+                archivistReqXp = reqXp;
+            }
+            else if (dropSelect.value == 3)
+            {
                 astrologerLevel = level;
                 astrologerCurrentXp = currentXp;
                 astrologerReqXp = reqXp;
             }
-            else if (dropSelect.value == 2)
+            else if (dropSelect.value == 4)
             {
                 enchanterLevel = level;
                 enchanterCurrentXp = currentXp;
                 enchanterReqXp = reqXp;
             }
-            else if (dropSelect.value == 3)
+            else if (dropSelect.value == 5)
             {
                 gardenerLevel = level;
                 gardenerCurrentXp = currentXp;
                 gardenerReqXp = reqXp;
             }
-            else if (dropSelect.value == 4)
+            else if (dropSelect.value == 6)
             {
                 summonerLevel = level;
                 summonerCurrentXp = currentXp;
                 summonerReqXp = reqXp;
             }
-            else if (dropSelect.value == 5)
+            else if (dropSelect.value == 7)
+            {
+                surveyorLevel = level;
+                surveyorCurrentXp = currentXp;
+                surveyorReqXp = reqXp;
+            }
+            else if (dropSelect.value == 8)
             {
                 warlockLevel = level;
                 warlockCurrentXp = currentXp;
@@ -226,6 +295,36 @@ public class SkillLevelCalculator : MonoBehaviour
     {
         if (dropSelect.value == 1)
         {
+            level = architectLevel;
+            levelText = levelTextArchitect;
+
+            reqXp = architectReqXp;
+            totalXp = architectTotalXp;
+            currentXp = architectCurrentXp;
+
+            totalXpText = totalXpTextArchitect;
+            xpThisLevel = xpThisLevelArchitect;
+
+            xpBar = xpBarArchitect;
+            backXpBar = backXpBarArchitect;
+        }
+        else if (dropSelect.value == 2)
+        {
+            level = archivistLevel;
+            levelText = levelTextArchivist;
+
+            reqXp = archivistReqXp;
+            totalXp = archivistTotalXp;
+            currentXp = archivistCurrentXp;
+
+            totalXpText = totalXpTextArchivist;
+            xpThisLevel = xpThisLevelArchivist;
+
+            xpBar = xpBarArchivist;
+            backXpBar = backXpBarArchivist;
+        }
+        else if (dropSelect.value == 3)
+        {
             level = astrologerLevel;
             levelText = levelTextAstrologer;
 
@@ -239,7 +338,7 @@ public class SkillLevelCalculator : MonoBehaviour
             xpBar = xpBarAstrologer;
             backXpBar = backXpBarAstrologer;
         }
-        else if (dropSelect.value == 2)
+        else if (dropSelect.value == 4)
         {
             level = enchanterLevel;
             levelText = levelTextEnchanter;
@@ -254,7 +353,7 @@ public class SkillLevelCalculator : MonoBehaviour
             xpBar = xpBarEnchanter;
             backXpBar = backXpBarEnchanter;
         }
-        else if (dropSelect.value == 3)
+        else if (dropSelect.value == 5)
         {
             level = gardenerLevel;
             levelText = levelTextGardener;
@@ -269,7 +368,7 @@ public class SkillLevelCalculator : MonoBehaviour
             xpBar = xpBarGardener;
             backXpBar = backXpBarGardener;
         }
-        else if (dropSelect.value == 4)
+        else if (dropSelect.value == 6)
         {
             level = summonerLevel;
             levelText = levelTextSummoner;
@@ -284,7 +383,22 @@ public class SkillLevelCalculator : MonoBehaviour
             xpBar = xpBarSummoner;
             backXpBar = backXpBarSummoner;
         }
-        else if (dropSelect.value == 5)
+        else if (dropSelect.value == 7)
+        {
+            level = surveyorLevel;
+            levelText = levelTextSurveyor;
+
+            reqXp = surveyorReqXp;
+            totalXp = surveyorTotalXp;
+            currentXp = surveyorCurrentXp;
+
+            totalXpText = totalXpTextSurveyor;
+            xpThisLevel = xpThisLevelSurveyor;
+
+            xpBar = xpBarSurveyor;
+            backXpBar = backXpBarSurveyor;
+        }
+        else if (dropSelect.value == 8)
         {
             level = warlockLevel;
             levelText = levelTextWarlock;
@@ -303,13 +417,23 @@ public class SkillLevelCalculator : MonoBehaviour
 
     public void SaveData()
     {
-        SaveLoadData.SaveData(this);
+        SaveLoadLevelData.SaveData(this);
         Debug.Log("File Saved");
     }
 
     public void LoadData()
     {
-        LevelData levelData = SaveLoadData.LoadData();
+        LevelData levelData = SaveLoadLevelData.LoadData();
+
+        architectLevel = levelData.architectLevel;
+        architectReqXp = levelData.architectReqXp;
+        architectCurrentXp = levelData.architectCurrentXp;
+        architectTotalXp = levelData.architectTotalXp;
+
+        archivistLevel = levelData.archivistLevel;
+        archivistReqXp = levelData.archivistReqXp;
+        archivistCurrentXp = levelData.archivistCurrentXp;
+        archivistTotalXp = levelData.archivistTotalXp;
 
         astrologerLevel = levelData.astrologerLevel;
         astrologerReqXp = levelData.astrologerReqXp;
@@ -330,6 +454,11 @@ public class SkillLevelCalculator : MonoBehaviour
         summonerReqXp = levelData.summonerReqXp;
         summonerCurrentXp = levelData.summonerCurrentXp;
         summonerTotalXp = levelData.summonerTotalXp;
+
+        surveyorLevel = levelData.surveyorLevel;
+        surveyorReqXp = levelData.surveyorReqXp;
+        surveyorCurrentXp = levelData.surveyorCurrentXp;
+        surveyorTotalXp = levelData.surveyorTotalXp;
 
         warlockLevel = levelData.warlockLevel;
         warlockReqXp = levelData.warlockReqXp;
