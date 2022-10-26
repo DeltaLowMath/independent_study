@@ -7,6 +7,18 @@ using TMPro;
 [System.Serializable]
 public class LevelData {
 
+    [Header("Architect Data")]
+    public int architectLevel;
+    public float architectReqXp;
+    public float architectCurrentXp;
+    public float architectTotalXp;
+
+    [Header("Archivist Data")]
+    public int archivistLevel;
+    public float archivistReqXp;
+    public float archivistCurrentXp;
+    public float archivistTotalXp;
+
     [Header("Astrologer Data")]
     public int astrologerLevel;
     public float astrologerReqXp;
@@ -31,6 +43,12 @@ public class LevelData {
     public float summonerCurrentXp;
     public float summonerTotalXp;
 
+    [Header("Surveyor Data")]
+    public int surveyorLevel;
+    public float surveyorReqXp;
+    public float surveyorCurrentXp;
+    public float surveyorTotalXp;
+
     [Header("Warlock Data")]
     public int warlockLevel;
     public float warlockReqXp;
@@ -40,6 +58,16 @@ public class LevelData {
     
     public LevelData (SkillLevelCalculator player)
     {
+        architectLevel = player.architectLevel;
+        architectReqXp = player.architectReqXp;
+        architectCurrentXp = player.architectCurrentXp;
+        architectTotalXp = player.architectTotalXp;
+
+        archivistLevel = player.archivistLevel;
+        archivistReqXp = player.archivistReqXp;
+        archivistCurrentXp = player.archivistCurrentXp;
+        archivistTotalXp = player.archivistTotalXp;
+
         astrologerLevel = player.astrologerLevel;
         astrologerReqXp = player.astrologerReqXp;
         astrologerCurrentXp = player.astrologerCurrentXp;
@@ -59,6 +87,11 @@ public class LevelData {
         summonerReqXp = player.summonerReqXp;
         summonerCurrentXp = player.summonerCurrentXp;
         summonerTotalXp = player.summonerTotalXp;
+
+        surveyorLevel = player.surveyorLevel;
+        surveyorReqXp = player.surveyorReqXp;
+        surveyorCurrentXp = player.surveyorCurrentXp;
+        surveyorTotalXp = player.surveyorTotalXp;
 
         warlockLevel = player.warlockLevel;
         warlockReqXp = player.warlockReqXp;
