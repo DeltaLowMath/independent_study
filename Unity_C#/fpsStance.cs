@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class fpsStance : MonoBehaviour
 {
-    public float playerStand = 1.0f;
-    public float playerCrouch = 0.5f;
-    public float playerProne = 0.1f;
-    public float playerStance;
+    float playerStand = 1.0f;
+    float playerCrouch = 0.5f;
+    float playerProne = 0.1f;
+    float playerStance;
 
 
     void Start()

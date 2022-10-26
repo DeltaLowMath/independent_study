@@ -5,11 +5,15 @@ using UnityEngine;
 public class fpsJump : MonoBehaviour
 {
     Rigidbody playerBody;
+
+    [Header("Jump Settings")]
     public float jumpForce = 0.0f;
-    float groundCheckRadius = 0.1f;
+    public bool groundedJump;
+
+    [Header("Single Jump Checker")]
     public LayerMask groundLayer;
-    public Transform playerFeet;
-    public bool singleJump;
+    public Transform groundChecker;
+    float groundCheckRadius = 1.0f;
 
 
     void Start()
@@ -17,10 +21,9 @@ public class fpsJump : MonoBehaviour
         playerBody = GetComponent<Rigidbody>();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (singleJump)
+        if (groundedJump)
         {
             GroundedJump();
         }
@@ -28,7 +31,6 @@ public class fpsJump : MonoBehaviour
         {
             FlyJump();
         }
-
     }
 
     void FlyJump()
@@ -49,7 +51,7 @@ public class fpsJump : MonoBehaviour
 
     bool PlayerIsOnGround()
     {
-        Collider[] colliders = Physics.OverlapSphere(playerFeet.position, groundCheckRadius, groundLayer);
+        Collider[] colliders = Physics.OverlapSphere(groundChecker.position, groundCheckRadius, groundLayer);
 
         if (colliders.Length > 0)
         {

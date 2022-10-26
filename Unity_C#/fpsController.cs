@@ -5,7 +5,9 @@ using UnityEngine;
 public class fpsController : MonoBehaviour
 {
     Rigidbody playerBody;
-    public float playerWalk = 4.0f;
+
+    [Header("Player Speed")]
+    public float playerWalk = 5.0f;
     public float playerSprint = 2.0f;
     
 
@@ -21,9 +23,9 @@ public class fpsController : MonoBehaviour
 
     void Movement()
     {
-        float AD = Input.GetAxisRaw("Horizontal");
-        float WS = Input.GetAxisRaw("Vertical");
-        Vector3 playerMove = transform.right * AD + transform.forward * WS;
+        float sideWays = Input.GetAxisRaw("Horizontal");
+        float wardWays = Input.GetAxisRaw("Vertical");
+        Vector3 playerMove = transform.right * sideWays + transform.forward * wardWays;
 
         float playerSpeed = playerWalk;
         if (Input.GetKey(KeyCode.LeftShift))
