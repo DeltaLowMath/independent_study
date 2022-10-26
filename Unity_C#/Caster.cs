@@ -5,13 +5,16 @@ using UnityEngine;
 public class Caster : MonoBehaviour
 {
     GameObject spell;
+    float spellVelocity;
+
+    [Header("Spell Prefabs")]
     public GameObject energyBall;
     public GameObject energyBolt;
     public GameObject energyDisc;
     public GameObject energyWall;
     public GameObject energyOrb;
     public GameObject energyRay;
-    public float spellVelocity = 0f;
+    
 
     void Update()
     {
