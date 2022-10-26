@@ -4,21 +4,21 @@ using UnityEngine;
 
 public class Grabber : MonoBehaviour
 {
-    RaycastHit grip;
+    public RaycastHit grip;
     float reachDistance = 10;
     GameObject heldObject;
     public Transform holdDistance;
 
     void Start()
     {
-        
+
     }
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.F) && Physics.Raycast(transform.position, transform.forward, out grip, reachDistance) && grip.transform.GetComponent<Rigidbody>())
+        if (Input.GetKey(KeyCode.F))
         {
-            heldObject = grip.transform.gameObject;
+            Reach(); 
         }
         else if (Input.GetKey(KeyCode.R))
         {
@@ -26,7 +26,28 @@ public class Grabber : MonoBehaviour
         }
         if (heldObject)
         {
-            heldObject.GetComponent<Rigidbody>().velocity = 10 * (holdDistance.position - heldObject.transform.position);
+            Grab();
         }
+    }
+
+    void Reach()
+    {
+        RaycastHit grip = new RaycastHit();
+        var reachable = Physics.Raycast(
+            transform.position,
+            transform.forward,
+            out grip,
+            reachDistance
+            );
+
+        if (reachable && grip.transform.GetComponent<Rigidbody>())
+        {
+            heldObject = grip.transform.gameObject;
+        }
+    }
+
+    void Grab()
+    {
+        heldObject.GetComponent<Rigidbody>().velocity = 10 * (holdDistance.position - heldObject.transform.position);
     }
 }
