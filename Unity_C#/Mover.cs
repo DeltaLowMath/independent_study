@@ -4,29 +4,16 @@ using UnityEngine;
 
 public class Mover : MonoBehaviour
 {
-    public float move = -2;
     public GameObject walls;
     bool activated;
-    public float wallPosition;
-    public float limit;
+    float wallPosition;
+    float limit = -20f;
+    float move = -2f;
 
 
-    void Start()
-    {
-        
-    }
     void Update()
     {
-        wallPosition = walls.transform.position.y;
-        if (activated == true)
-        {
-            Vector3 movement = new Vector3(0, move, 0);
-            walls.transform.Translate(movement * Time.deltaTime);
-            if (wallPosition <= -20)
-            {
-                move = 0;
-            }
-        }
+        MoveWall();
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -34,6 +21,25 @@ public class Mover : MonoBehaviour
         if (collision.gameObject.CompareTag("Key"))
         {
             activated = true;
+        }
+    }
+
+    void MoveWall()
+    {
+        if (activated == true)
+        {
+            Vector3 movement = new Vector3(0, move, 0);
+            walls.transform.Translate(movement * Time.deltaTime);
+            MoveLimit();
+        }
+    }
+
+    void MoveLimit()
+    {
+        wallPosition = walls.transform.position.y;
+        if (wallPosition <= limit)
+        {
+            move = 0;
         }
     }
 }
