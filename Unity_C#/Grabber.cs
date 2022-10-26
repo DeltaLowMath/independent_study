@@ -4,13 +4,11 @@ using UnityEngine;
 
 public class Grabber : MonoBehaviour
 {
-    public RaycastHit reach;
     GameObject grabbableObject;
     public Transform holdDistance;
-
-    float reachDistance = 10;
-    float throwVelocity = 10;
-
+    float reachDistance = 10f;
+    float throwVelocity = 10f;
+    
 
     void Update()
     {
