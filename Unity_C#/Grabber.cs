@@ -4,50 +4,57 @@ using UnityEngine;
 
 public class Grabber : MonoBehaviour
 {
-    public RaycastHit grip;
-    float reachDistance = 10;
-    GameObject heldObject;
+    public RaycastHit reach;
+    GameObject grabbableObject;
     public Transform holdDistance;
 
-    void Start()
-    {
+    float reachDistance = 10;
+    float throwVelocity = 10;
 
-    }
 
     void Update()
     {
         if (Input.GetKey(KeyCode.F))
         {
-            Reach(); 
+            Grab();
         }
         else if (Input.GetKey(KeyCode.R))
         {
-            heldObject = null;
+            Release();
         }
-        if (heldObject)
+        if (grabbableObject)
         {
-            Grab();
-        }
-    }
-
-    void Reach()
-    {
-        RaycastHit grip = new RaycastHit();
-        var reachable = Physics.Raycast(
-            transform.position,
-            transform.forward,
-            out grip,
-            reachDistance
-            );
-
-        if (reachable && grip.transform.GetComponent<Rigidbody>())
-        {
-            heldObject = grip.transform.gameObject;
+            Hold();
         }
     }
 
     void Grab()
     {
-        heldObject.GetComponent<Rigidbody>().velocity = 10 * (holdDistance.position - heldObject.transform.position);
+        RaycastHit reach = new RaycastHit();
+        var reachable = Physics.Raycast(
+            transform.position,
+            transform.forward,
+            out reach,
+            reachDistance
+            );
+
+        if (reachable && reach.transform.GetComponent<Rigidbody>())
+        {
+            grabbableObject = reach.transform.gameObject;
+        }
+    }
+
+    void Hold()
+    {
+        grabbableObject.GetComponent<Rigidbody>().velocity = 
+            throwVelocity * (holdDistance.position - grabbableObject.transform.position);
+        grabbableObject.transform.localEulerAngles = Vector3.zero;
+        grabbableObject.tag = "Held";
+    }
+
+    void Release()
+    {
+        grabbableObject.tag = "Key";
+        grabbableObject = null;
     }
 }
