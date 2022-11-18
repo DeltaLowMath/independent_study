@@ -7,23 +7,29 @@ using TMPro;
 
 public class SkillLevelIndex : MonoBehaviour
 {
-    SkillLevelTable data;
     SkillLevelUI ui;
+    SkillLevelTable data;
+    SkillLevelCalculator main;
+
+    public int take;
+    public int pass;
+    public bool loadKey = false;
 
     public Dictionary<int, Image> xpBar = new Dictionary<int, Image>();
     public Dictionary<int, Image> xpBackBar = new Dictionary<int, Image>();
     public Dictionary<int, TextMeshProUGUI> levelText = new Dictionary<int, TextMeshProUGUI>();
     public Dictionary<int, TextMeshProUGUI> xpTotalText = new Dictionary<int, TextMeshProUGUI>();
     public Dictionary<int, TextMeshProUGUI> xpThisLevelText = new Dictionary<int, TextMeshProUGUI>();
-    public Dictionary<int, int> level = new Dictionary<int, int>();
     public Dictionary<int, float> xpRequired = new Dictionary<int, float>();
     public Dictionary<int, float> xpCurrent = new Dictionary<int, float>();
     public Dictionary<int, float> xpTotal = new Dictionary<int, float>();
+    public Dictionary<int, int> level = new Dictionary<int, int>();
 
     void Awake()
     {
-        data = this.gameObject.GetComponent<SkillLevelTable>();
         ui = this.gameObject.GetComponent<SkillLevelUI>();
+        data = this.gameObject.GetComponent<SkillLevelTable>();
+        main = this.gameObject.GetComponent<SkillLevelCalculator>();
     }
 
     void Start()
@@ -57,14 +63,18 @@ public class SkillLevelIndex : MonoBehaviour
 
     public void Load()
     {
-        LevelData levelData = SaveLoadLevelData.LoadData();
-        for (int i = 0; i < 9; i++)
+        loadKey = true; int i; i = take; pass = i;
+        if (i > 8)
         {
-            level[i] = levelData.levelStore[i];
-            xpRequired[i] = levelData.xpRequiredStore[i];
-            xpCurrent[i] = levelData.xpCurrentStore[i];
-            xpTotal[i] = levelData.xpTotalStore[i];
+            loadKey = false;
         }
+        LevelData levelData = SaveLoadLevelData.LoadData();
+        xpRequired[i] = levelData.xpRequiredStore[i];
+        xpCurrent[i] = levelData.xpCurrentStore[i];
+        xpTotal[i] = levelData.xpTotalStore[i];
+        level[i] = levelData.levelStore[i];
+        i++;
+        Debug.Log("File Loaded");
     }
 
     void setXpBar()
@@ -132,19 +142,6 @@ public class SkillLevelIndex : MonoBehaviour
         xpThisLevelText.Add(8, ui.xpThisLevelWarlock);
     }
 
-    void setLevel()
-    {
-        level.Add(0, data.level);
-        level.Add(1, data.architectLevel);
-        level.Add(2, data.archivistLevel);
-        level.Add(3, data.astrologerLevel);
-        level.Add(4, data.enchanterLevel);
-        level.Add(5, data.gardenerLevel);
-        level.Add(6, data.summonerLevel);
-        level.Add(7, data.surveyorLevel);
-        level.Add(8, data.warlockLevel);
-    }
-
     void setReqXp()
     {
         xpRequired.Add(0, data.reqXp);
@@ -182,5 +179,18 @@ public class SkillLevelIndex : MonoBehaviour
         xpTotal.Add(6, data.summonerTotalXp);
         xpTotal.Add(7, data.surveyorTotalXp);
         xpTotal.Add(8, data.warlockTotalXp);
+    }
+
+    void setLevel()
+    {
+        level.Add(0, data.level);
+        level.Add(1, data.architectLevel);
+        level.Add(2, data.archivistLevel);
+        level.Add(3, data.astrologerLevel);
+        level.Add(4, data.enchanterLevel);
+        level.Add(5, data.gardenerLevel);
+        level.Add(6, data.summonerLevel);
+        level.Add(7, data.surveyorLevel);
+        level.Add(8, data.warlockLevel);
     }
 }

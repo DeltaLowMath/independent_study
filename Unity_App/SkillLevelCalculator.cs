@@ -21,12 +21,12 @@ public class SkillLevelCalculator : MonoBehaviour
     float xpCurrent;
     float xpTotal;
 
-    Image xpBar;
-    Image xpBackBar;
+    public Image xpBar;
+    public Image xpBackBar;
 
-    TextMeshProUGUI levelText;
-    TextMeshProUGUI xpTotalText;
-    TextMeshProUGUI xpThisLevelText;
+    public TextMeshProUGUI levelText;
+    public TextMeshProUGUI xpTotalText;
+    public TextMeshProUGUI xpThisLevelText;
 
     [Header("Input")]
     public TMPro.TMP_Dropdown dropSelect;
@@ -40,15 +40,26 @@ public class SkillLevelCalculator : MonoBehaviour
 
     void Update()
     {
-        LevelCalculate();
+        if (index.loadKey)
+        {
+            i = index.pass;
+            LevelCalculate(i);
+            index.take = i;
+            index.Load();
+        }
+        else
+        {
+            i = dropSelect.value;
+            LevelCalculate(i);
+        }
     }
 
-    void LevelCalculate()
+    public void LevelCalculate(int i)
     {
-        i = dropSelect.value;
         if (i > 0)
         {
-            SkillSelector();
+            SkillDataSelector();
+            SkillUISelector();
             XpUIUpdate();
             if (logged)
             {
@@ -60,30 +71,39 @@ public class SkillLevelCalculator : MonoBehaviour
             {
                 LevelUp();
             }
-            SkillStore();
+            SkillUIStore();
+            SkillDataStore();
         }
     }
 
-    void SkillSelector()
+    public void SkillUISelector()
     {
         xpBar = index.xpBar[i];
         xpBackBar = index.xpBackBar[i];
         levelText = index.levelText[i];
         xpTotalText = index.xpTotalText[i];
         xpThisLevelText = index.xpThisLevelText[i];
+    }
+
+    void SkillDataSelector()
+    {
         xpRequired = index.xpRequired[i];
         xpCurrent = index.xpCurrent[i];
         xpTotal = index.xpTotal[i];
         level = index.level[i];
     }
 
-    void SkillStore()
+    void SkillUIStore()
     {
         index.xpBar[i] = xpBar;
         index.xpBackBar[i] = xpBackBar;
         index.levelText[i] = levelText;
         index.xpTotalText[i] = xpTotalText;
         index.xpThisLevelText[i] = xpThisLevelText;
+    }
+
+    void SkillDataStore()
+    {
         index.xpRequired[i] = xpRequired;
         index.xpCurrent[i] = xpCurrent;
         index.xpTotal[i] = xpTotal;
@@ -105,7 +125,7 @@ public class SkillLevelCalculator : MonoBehaviour
                 xpBar.fillAmount = Mathf.Lerp(xpFill, xpBackBar.fillAmount, percentFull);
             }
         }
-        xpThisLevelText.text = "XP" + xpCurrent + "/" + xpRequired; 
+        xpThisLevelText.text = "XP" + xpCurrent + " / " + xpRequired; 
     }
 
     public void XpGainFlatRate(float xpGained)
