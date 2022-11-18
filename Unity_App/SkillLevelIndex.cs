@@ -34,11 +34,11 @@ public class SkillLevelIndex : MonoBehaviour
 
     void Start()
     {
-        setUI();
-        setData();
+        /*setUI();
+        setData();*/
     }
 
-    void setUI()
+    public void setUI()
     {
         setXpBar();
         setXpBackBar();
@@ -47,7 +47,7 @@ public class SkillLevelIndex : MonoBehaviour
         setXpThisLevelText();
     }
 
-    void setData()
+    public void setData()
     {
         setLevel();
         setReqXp();
@@ -79,7 +79,7 @@ public class SkillLevelIndex : MonoBehaviour
 
     void setXpBar()
     {
-        xpBar.Add(0, null);
+        xpBar.Add(0, main.xpBar);
         xpBar.Add(1, ui.xpBarArchitect);
         xpBar.Add(2, ui.xpBarArchivist);
         xpBar.Add(3, ui.xpBarAstrologer);
@@ -92,7 +92,7 @@ public class SkillLevelIndex : MonoBehaviour
 
     void setXpBackBar()
     {
-        xpBackBar.Add(0, null);
+        xpBackBar.Add(0, main.xpBackBar);
         xpBackBar.Add(1, ui.backXpBarArchitect);
         xpBackBar.Add(2, ui.backXpBarArchivist);
         xpBackBar.Add(3, ui.backXpBarAstrologer);
@@ -105,7 +105,7 @@ public class SkillLevelIndex : MonoBehaviour
 
     void setLevelText()
     {
-        levelText.Add(0, null);
+        levelText.Add(0, main.levelText);
         levelText.Add(1, ui.levelTextArchitect);
         levelText.Add(2, ui.levelTextArchivist);
         levelText.Add(3, ui.levelTextAstrologer);
@@ -118,7 +118,7 @@ public class SkillLevelIndex : MonoBehaviour
 
     void setXpTotalText()
     {
-        xpTotalText.Add(0, null);
+        xpTotalText.Add(0, main.xpTotalText);
         xpTotalText.Add(1, ui.totalXpTextArchitect);
         xpTotalText.Add(2, ui.totalXpTextArchivist);
         xpTotalText.Add(3, ui.totalXpTextAstrologer);
@@ -131,7 +131,7 @@ public class SkillLevelIndex : MonoBehaviour
 
     void setXpThisLevelText()
     {
-        xpThisLevelText.Add(0, null);
+        xpThisLevelText.Add(0, main.xpThisLevelText);
         xpThisLevelText.Add(1, ui.xpThisLevelArchitect);
         xpThisLevelText.Add(2, ui.xpThisLevelArchivist);
         xpThisLevelText.Add(3, ui.xpThisLevelAstrologer);

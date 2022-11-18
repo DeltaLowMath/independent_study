@@ -8,18 +8,24 @@ using TMPro;
 public class SkillLevelCalculator : MonoBehaviour
 {
     SkillLevelIndex index;
+    SkillLevelTable data;
+    SkillLevelUI ui;
+    XpConveyor convey;
 
     float lerpTimer;
     float delayTimer;
-    public int delay;
-    public int fillTime;
+    int delay = 1;
+    int fillTime = 160;
 
-    int i;
     int xp;
     int level;
     float xpRequired;
     float xpCurrent;
     float xpTotal;
+
+    IEnumerator coroutine;
+    int selectReference;
+    int i;
 
     public Image xpBar;
     public Image xpBackBar;
@@ -36,25 +42,26 @@ public class SkillLevelCalculator : MonoBehaviour
     void Awake()
     {
         index = this.gameObject.GetComponent<SkillLevelIndex>();
+        data = this.gameObject.GetComponent<SkillLevelTable>();
+        ui = this.gameObject.GetComponent<SkillLevelUI>();
+        convey = this.gameObject.GetComponent<XpConveyor>();
+    }
+
+    void Start()
+    {
+        index.setData();
+        index.setUI();
+        coroutine = convey.ConveyXp();
+        StartCoroutine(coroutine);
     }
 
     void Update()
     {
-        if (index.loadKey)
-        {
-            i = index.pass;
-            LevelCalculate(i);
-            index.take = i;
-            index.Load();
-        }
-        else
-        {
-            i = dropSelect.value;
-            LevelCalculate(i);
-        }
+        i = selectReference;
+        LevelCalculate(i, xp);
     }
 
-    public void LevelCalculate(int i)
+    public void LevelCalculate(int i, int xp)
     {
         if (i > 0)
         {
@@ -159,5 +166,30 @@ public class SkillLevelCalculator : MonoBehaviour
     {
         int.TryParse(xpInput.text, out xp);
         logged = true;
+    }
+    void XpLogManual()
+    {
+        if (index.loadKey)
+        {
+            i = index.pass;
+            LevelCalculate(i, xp);
+            index.take = i;
+            index.Load();
+        }
+        else
+        {
+            i = dropSelect.value;
+            LevelCalculate(i, xp);
+        }
+    }
+
+    public void CalculateXp(int skill, int hours, int xpAmount)
+    {
+        if (skill > 0)
+        {
+            xp = hours * (xpAmount * 10);
+            logged = true;
+            selectReference = skill;
+        }
     }
 }
