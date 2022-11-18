@@ -7,8 +7,7 @@ using TMPro;
 
 public class SkillLevelCalculator : MonoBehaviour
 {
-    //public SkillLevelTable data;
-    SkillLevelIndex _index;
+    SkillLevelIndex index;
 
     float lerpTimer;
     float delayTimer;
@@ -17,6 +16,17 @@ public class SkillLevelCalculator : MonoBehaviour
 
     int i;
     int xp;
+    int level;
+    float xpRequired;
+    float xpCurrent;
+    float xpTotal;
+
+    Image xpBar;
+    Image xpBackBar;
+
+    TextMeshProUGUI levelText;
+    TextMeshProUGUI xpTotalText;
+    TextMeshProUGUI xpThisLevelText;
 
     [Header("Input")]
     public TMPro.TMP_Dropdown dropSelect;
@@ -25,72 +35,102 @@ public class SkillLevelCalculator : MonoBehaviour
 
     void Awake()
     {
-        _index = this.gameObject.GetComponent<SkillLevelIndex>();
-    }
-
-    void Start()
-    {
-        _index.SetSelect();
+        index = this.gameObject.GetComponent<SkillLevelIndex>();
     }
 
     void Update()
     {
+        LevelCalculate();
+    }
+
+    void LevelCalculate()
+    {
         i = dropSelect.value;
-        Debug.Log(_index.xpTotalText[i]);
-        XpUIUpdate();
-        if (logged)
+        if (i > 0)
         {
-            XpGainFlatRate(xp);
-            _index.xpTotalText[i].text = "Total Xp " + _index.xpTotal[i];
+            SkillSelector();
+            XpUIUpdate();
+            if (logged)
+            {
+                XpGainFlatRate(xp);
+                xpTotalText.text = "Total Xp " + xpTotal;
+            }
+            logged = false;
+            if (xpCurrent > xpRequired)
+            {
+                LevelUp();
+            }
+            SkillStore();
         }
-        logged = false;
-        if (_index.xpCurrent[i] > _index.xpRequired[i])
-        {
-            LevelUp();
-        }
+    }
+
+    void SkillSelector()
+    {
+        xpBar = index.xpBar[i];
+        xpBackBar = index.xpBackBar[i];
+        levelText = index.levelText[i];
+        xpTotalText = index.xpTotalText[i];
+        xpThisLevelText = index.xpThisLevelText[i];
+        xpRequired = index.xpRequired[i];
+        xpCurrent = index.xpCurrent[i];
+        xpTotal = index.xpTotal[i];
+        level = index.level[i];
+    }
+
+    void SkillStore()
+    {
+        index.xpBar[i] = xpBar;
+        index.xpBackBar[i] = xpBackBar;
+        index.levelText[i] = levelText;
+        index.xpTotalText[i] = xpTotalText;
+        index.xpThisLevelText[i] = xpThisLevelText;
+        index.xpRequired[i] = xpRequired;
+        index.xpCurrent[i] = xpCurrent;
+        index.xpTotal[i] = xpTotal;
+        index.level[i] = level;
     }
 
     public void XpUIUpdate()
     {
-        float xpFraction = _index.xpCurrent[i] / _index.xpRequired[i];
-        float xpFill = _index.xpBar[i].fillAmount;
+        float xpFraction = xpCurrent / xpRequired;
+        float xpFill = xpBar.fillAmount;
         if (xpFill < xpFraction)
         {
             delayTimer += Time.deltaTime;
-            _index.xpBackBar[i].fillAmount = xpFraction;
+            xpBackBar.fillAmount = xpFraction;
             if (delayTimer > delay)
             {
                 lerpTimer += Time.deltaTime;
                 float percentFull = lerpTimer / fillTime;
-                _index.xpBar[i].fillAmount = Mathf.Lerp(xpFill, _index.xpBackBar[i].fillAmount, percentFull);
+                xpBar.fillAmount = Mathf.Lerp(xpFill, xpBackBar.fillAmount, percentFull);
             }
         }
-        _index.xpThisLevelText[i].text = "XP" + _index.xpCurrent[i] + "/" + _index.xpRequired[i]; 
+        xpThisLevelText.text = "XP" + xpCurrent + "/" + xpRequired; 
     }
 
     public void XpGainFlatRate(float xpGained)
     {
-        _index.xpCurrent[i] += xpGained;
-        _index.xpTotal[i] += xpGained;
+        xpCurrent += xpGained;
+        xpTotal += xpGained;
         lerpTimer = 0f;
     }
 
     public void LevelUp()
     {
-        _index.level[i]++;
-        _index.xpBar[i].fillAmount = 0f;
-        _index.xpBackBar[i].fillAmount = 0f;
-        _index.xpCurrent[i] = Mathf.RoundToInt(_index.xpCurrent[i] - _index.xpRequired[i]);
-        _index.xpRequired[i] = XpReqCalculate();
-        _index.levelText[i].text = "Level " + _index.level[i];
+        level++;
+        xpBar.fillAmount = 0f;
+        xpBackBar.fillAmount = 0f;
+        xpCurrent = Mathf.RoundToInt(xpCurrent - xpRequired);
+        xpRequired = XpReqCalculate();
+        levelText.text = "Level " + level;
     }
 
     public int XpReqCalculate()
     {
         int solveForXpRequried = 0;
-        for (int levelCycle = 1; levelCycle <= _index.level[i]; levelCycle++)
+        for (int levelCycle = 1; levelCycle <= level; levelCycle++)
         {
-            solveForXpRequried = (4 * (_index.level[i]) * (4 * (_index.level[i])));
+            solveForXpRequried = (4 * (level) * (4 * (level)));
         }
         return solveForXpRequried;
     }
