@@ -4,7 +4,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 public class SaveLoadLevelData {
 
-    public static void SaveData (SkillLevelCalculator data)
+    public static void SaveData (SkillLevelIndex data)
     {
         BinaryFormatter formatter = new BinaryFormatter();
         string path = Application.persistentDataPath + "/skillLevel.data";

@@ -32,7 +32,7 @@ public class SkillLevelIndex : MonoBehaviour
         setData();
     }
 
-    public void setUI()
+    void setUI()
     {
         setXpBar();
         setXpBackBar();
@@ -41,7 +41,7 @@ public class SkillLevelIndex : MonoBehaviour
         setXpThisLevelText();
     }
 
-    public void setData()
+    void setData()
     {
         setLevel();
         setReqXp();
@@ -49,7 +49,25 @@ public class SkillLevelIndex : MonoBehaviour
         setTotalXp();
     }
 
-    public void setXpBar()
+    public void Save()
+    {
+        SaveLoadLevelData.SaveData(this);
+        Debug.Log("File Saved");
+    }
+
+    public void Load()
+    {
+        LevelData levelData = SaveLoadLevelData.LoadData();
+        for (int i = 0; i < 9; i++)
+        {
+            level[i] = levelData.levelStore[i];
+            xpRequired[i] = levelData.xpRequiredStore[i];
+            xpCurrent[i] = levelData.xpCurrentStore[i];
+            xpTotal[i] = levelData.xpTotalStore[i];
+        }
+    }
+
+    void setXpBar()
     {
         xpBar.Add(0, null);
         xpBar.Add(1, ui.xpBarArchitect);
@@ -62,7 +80,7 @@ public class SkillLevelIndex : MonoBehaviour
         xpBar.Add(8, ui.xpBarWarlock);
     }
 
-    public void setXpBackBar()
+    void setXpBackBar()
     {
         xpBackBar.Add(0, null);
         xpBackBar.Add(1, ui.backXpBarArchitect);
@@ -75,7 +93,7 @@ public class SkillLevelIndex : MonoBehaviour
         xpBackBar.Add(8, ui.backXpBarWarlock);
     }
 
-    public void setLevelText()
+    void setLevelText()
     {
         levelText.Add(0, null);
         levelText.Add(1, ui.levelTextArchitect);
@@ -88,7 +106,7 @@ public class SkillLevelIndex : MonoBehaviour
         levelText.Add(8, ui.levelTextWarlock);
     }
 
-    public void setXpTotalText()
+    void setXpTotalText()
     {
         xpTotalText.Add(0, null);
         xpTotalText.Add(1, ui.totalXpTextArchitect);
@@ -101,7 +119,7 @@ public class SkillLevelIndex : MonoBehaviour
         xpTotalText.Add(8, ui.totalXpTextWarlock);
     }
 
-    public void setXpThisLevelText()
+    void setXpThisLevelText()
     {
         xpThisLevelText.Add(0, null);
         xpThisLevelText.Add(1, ui.xpThisLevelArchitect);
@@ -114,7 +132,7 @@ public class SkillLevelIndex : MonoBehaviour
         xpThisLevelText.Add(8, ui.xpThisLevelWarlock);
     }
 
-    public void setLevel()
+    void setLevel()
     {
         level.Add(0, data.level);
         level.Add(1, data.architectLevel);
@@ -127,7 +145,7 @@ public class SkillLevelIndex : MonoBehaviour
         level.Add(8, data.warlockLevel);
     }
 
-    public void setReqXp()
+    void setReqXp()
     {
         xpRequired.Add(0, data.reqXp);
         xpRequired.Add(1, data.architectReqXp);
@@ -140,7 +158,7 @@ public class SkillLevelIndex : MonoBehaviour
         xpRequired.Add(8, data.warlockReqXp);
     }
 
-    public void setCurrentXp()
+    void setCurrentXp()
     {
         xpCurrent.Add(0, data.currentXp);
         xpCurrent.Add(1, data.architectCurrentXp);
@@ -153,7 +171,7 @@ public class SkillLevelIndex : MonoBehaviour
         xpCurrent.Add(8, data.warlockCurrentXp);
     }
 
-    public void setTotalXp()
+    void setTotalXp()
     {
         xpTotal.Add(0, data.totalXp);
         xpTotal.Add(1, data.architectTotalXp);
