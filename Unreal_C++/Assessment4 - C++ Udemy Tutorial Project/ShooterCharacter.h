@@ -6,6 +6,15 @@
 #include "GameFramework/Character.h"
 #include "ShooterCharacter.generated.h"
 
+UENUM(BlueprintType)
+enum class EAmmoType : uint8
+{
+	EAT_9mm UMETA(DisplayName = "9mm"),
+	EAT_AR UMETA(DisplayName = "AssualtRifle"),
+
+	EAT_MAX UMETA(DisplayName = "DefaultMAX")
+};
+
 UCLASS()
 class SHOOTER_API AShooterCharacter : public ACharacter
 {
@@ -77,6 +86,33 @@ protected:
 
 	UFUNCTION()
 	void AutoFireReset();
+
+	// Line trace for items under the crosshairs
+	bool TraceUnderCrosshairs(FHitResult& OutHitResult, FVector& OutHitLocation);
+
+	// Trace for items if OverlappedItemCount > 0
+	void TraceForItems();
+
+	// Spawn a default weapon and equips it
+	class AWeapon* SpawnDefaultWeapon();
+
+	// Takes a weapon and attaches to the mesh
+	void EquipWeapon(AWeapon* WeaponToEquip);
+
+	// Dettach weapon and let it fall to the ground
+	void DropWeapon();
+
+	void SelectButtonPressed();
+	void SelectButtonReleased();
+
+	// Drops currently equipped Weapon and Equips TraceHitItem
+	void SwapWeapon(AWeapon* WeaponToSwap);
+
+	// Initialize the Ammo Map with ammo values
+	void InitializeAmmoMap();
+
+	// Check to make sure weapon has ammo
+	bool bWeaponHasAmmo();
 
 public:	
 	// Called every frame
@@ -211,6 +247,48 @@ private:
 	// Sets a timer between gunshots
 	FTimerHandle AutoFireTimer;
 
+	// True if should trace every frame for items
+	bool bShouldTraceForItems;
+
+	// Number of overlapped AItems
+	int8 OverlappedItemCount;
+
+	// The AItem hit last frame
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Items, meta = (AllowPrivateAccess = "true"))
+	class AItem* TraceHitItemLastFrame;
+
+	// Currently equipped weapon
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Combat, meta = (AllowPrivateAccess = "true"))
+	AWeapon* EquippedWeapon;
+
+	// Set this in Blueprint for the default Weapon class
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Combat, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<AWeapon> DefaultWeaponClass;
+
+	// The item currently hit by our trace in TraceForItems (could be null)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Combat, meta = (AllowPrivateAccess = "true"))
+	AItem* TraceHitItem;
+
+	// Distance outward from the camera for the interp destination
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Items, meta = (AllowPrivateAccess = "true"))
+	float CameraInterpDistance;
+
+	// Distance upward from the camera for the interp destination
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Items, meta = (AllowPrivateAccess = "true"))
+	float CameraInterpElevation;
+
+	// Map to keep track of ammo of the different ammo types
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Items, meta = (AllowPrivateAccess = "true"))
+	TMap<EAmmoType, int32> AmmoMap;
+
+	// Starting amount of 9mm ammo
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Items, meta = (AllowPrivateAccess = "true"))
+	int32 Starting9mmAmmo;
+
+	// Starting amount of AR ammo
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Items, meta = (AllowPrivateAccess = "true"))
+	int32 StartingARAmmo;
+
 public:
 	// Returns CameraBoom subobject
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -221,4 +299,13 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	float GetCrosshairSpreadMultiplier() const;
+
+	FORCEINLINE int8 GetOverlappedItemCount() const { return OverlappedItemCount; }
+
+	// Adds/subtracs to/from OverlappedItemCount and updates bShouldTraceForItems 
+	void IncrementOverlappedItemCount(int8 Amount);
+
+	FVector GetCameraInterpLocation();
+
+	void GetPickupItem(AItem* Item);
 };
