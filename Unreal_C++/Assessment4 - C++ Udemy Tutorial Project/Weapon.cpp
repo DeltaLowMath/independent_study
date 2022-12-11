@@ -6,7 +6,12 @@
 AWeapon::AWeapon() :
 	ThrowWeaponTime(0.7f),
 	bFalling(false),
-	Ammo(0)
+	Ammo(30),
+	MagazineCapactiy(30),
+	WeaponType(EWeaponType::EWT_SubmachineGun),
+	AmmoType(EAmmoType::EAT_9mm),
+	ReloadMontageSection(FName(TEXT("Realod SMG"))),
+	ClipBoneName(TEXT("smg_clip"))
 {
 	PrimaryActorTick.bCanEverTick = true;
 }
@@ -21,6 +26,8 @@ void AWeapon::Tick(float DeltaTime)
 		const FRotator MeshRotation{ 0.f, GetItemMesh()->GetComponentRotation().Yaw, 0.f};
 		GetItemMesh()->SetWorldRotation(MeshRotation, false, nullptr, ETeleportType::TeleportPhysics);
 	}
+
+	UE_LOG(LogTemp, Display, TEXT("Set Moving Clip: %d"), bMovingClip);
 }
 
 void AWeapon::ThrowWeapon()
@@ -52,6 +59,17 @@ void AWeapon::DecrementAmmo()
 	{
 		--Ammo;
 	}
+}
+
+void AWeapon::ReloadAmmo(int32 Amount)
+{
+	checkf(Ammo + Amount <= MagazineCapactiy, TEXT("Attempted to reload with more than magazine capacity"));
+	Ammo += Amount;
+}
+
+bool AWeapon::bClipIsFull()
+{
+	return Ammo >= MagazineCapactiy;
 }
 
 void AWeapon::StopFalling()

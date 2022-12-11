@@ -34,8 +34,8 @@ UCLASS()
 class SHOOTER_API AItem : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AItem();
 
@@ -45,17 +45,17 @@ protected:
 
 	// Called when overlapping AreaSphere
 	UFUNCTION()
-	void OnSphereOverlap(
-		UPrimitiveComponent* OverlappedComponent, 
-		AActor* OtherActor, 
-		UPrimitiveComponent* OtherComp, 
-		int32 OtherBodyIndex, 
-		bool bFromSweep, 
-		const FHitResult& SweepResult);
+		void OnSphereOverlap(
+			UPrimitiveComponent* OverlappedComponent,
+			AActor* OtherActor,
+			UPrimitiveComponent* OtherComp,
+			int32 OtherBodyIndex,
+			bool bFromSweep,
+			const FHitResult& SweepResult);
 
 	// Called when End Overlapping AreaSphere
 	UFUNCTION()
-	void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+		void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	// Sets the ActiveStars array of bools based on rarity
 	void SetActiveStars();
@@ -69,7 +69,7 @@ protected:
 	// Handles item interpolation when in the EquipInterping state
 	void ItemInterp(float DeltaTime);
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -147,13 +147,23 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = true))
 		UCurveFloat* ItemScaleCurve;
 
+	// Sound played when Item is picked up
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Properties", meta = (AllowPrivateAccess = true))
+		class USoundCue* PickupSound;
+
+	// Sound played when the Item is quipped
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Properties", meta = (AllowPrivateAccess = true))
+		USoundCue* EquipSound;
+
 public:
 	FORCEINLINE UWidgetComponent* GetPickupWidget() const { return PickupWidget; }
-	FORCEINLINE USphereComponent* GetAreaSphere() const { return AreaSphere;  }
+	FORCEINLINE USphereComponent* GetAreaSphere() const { return AreaSphere; }
 	FORCEINLINE UBoxComponent* GetCollisionBox() const { return CollisionBox; }
 	FORCEINLINE EItemState GetItemState() const { return ItemState; }
 	void SetItemState(EItemState State);
 	FORCEINLINE USkeletalMeshComponent* GetItemMesh() const { return ItemMesh; }
+	FORCEINLINE USoundCue* GetPickupSound() const { return PickupSound; }
+	FORCEINLINE USoundCue* GetEquipSound() const { return EquipSound; }
 
 	// Called from the AShooterCharacter class
 	void StartItemCurve(AShooterCharacter* Char);

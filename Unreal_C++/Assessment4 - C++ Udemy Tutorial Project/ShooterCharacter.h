@@ -4,17 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "AmmoType.h"
 #include "ShooterCharacter.generated.h"
 
 UENUM(BlueprintType)
-enum class EAmmoType : uint8
+enum class ECombatState : uint8
 {
-	EAT_9mm UMETA(DisplayName = "9mm"),
-	EAT_AR UMETA(DisplayName = "AssualtRifle"),
+	ECS_Unoccupied UMETA(DisplayName = "Unoccupied"),
+	ECS_Firing UMETA(DisplayName = "Firing"),
+	ECS_Reloading UMETA(DisplayName = "Reloading"),
 
-	EAT_MAX UMETA(DisplayName = "DefaultMAX")
+	ECS_MAX UMETA(DisplayName = "DefaultMAX")
 };
-
 UCLASS()
 class SHOOTER_API AShooterCharacter : public ACharacter
 {
@@ -114,6 +115,38 @@ protected:
 	// Check to make sure weapon has ammo
 	bool bWeaponHasAmmo();
 
+	// FireWeapon functions
+	void PlayFireSound();
+	void SendBullet();
+	void PlayGunFireMontage();
+
+	// Bound to the R key and Gamepad Face Button Left
+	void ReloadButtonPressed();
+
+	// Hnadle reloading of the weapon
+	void ReloadWeapon();
+
+	// Checks to see if have ammo of the EquippedWeapon's ammo type
+	bool bCarryingAmmo();
+
+	// Called from Animation Blueprint with Grab Clip notify
+	UFUNCTION(BlueprintCallable)
+	void GrabClip();
+
+	// Called from Animation Blueprint with Release Clip notify
+	UFUNCTION(BlueprintCallable)
+	void ReleaseClip();
+
+	void CrouchButtonPressed();
+
+	virtual void Jump() override;
+
+	//Interps capsule half height when crouching/standing
+	void InterpCapsuleHalfHeight(float DeltaTime);
+
+	void Aim();
+	void StopAiming();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -199,9 +232,11 @@ private:
 	bool bAiming;
 
 	// Default camera field of view value
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"))
 	float CameraDefaultFOV;
 
 	// Field of view value for when zoomed in
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"))
 	float CameraZoomedFOV;
 
 	// Current field of view this frame
@@ -289,6 +324,59 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Items, meta = (AllowPrivateAccess = "true"))
 	int32 StartingARAmmo;
 
+	// Combat State can only fire or reload if Unoccupied
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Combat, meta = (AllowPrivateAccess = "true"))
+	ECombatState CombatState;
+
+	// Montage for reload animations
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"))
+	UAnimMontage* ReloadMontage;
+
+	UFUNCTION(BlueprintCallable)
+	void FinishReloading();
+
+	// Transform of the clip when first grab the clip during reloading
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Combat, meta = (AllowPrivateAccess = "true"))
+	FTransform ClipTransform;
+
+	// Scene component to attach to the Chracter's hand during reloading
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Combat, meta = (AllowPrivateAccess = "true"))
+	USceneComponent* HandSceneComponent;
+
+	// True when crouching
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	bool bCrouching;
+
+	// Standing movement speed
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	float BaseMovementSpeed;
+
+	// Crouch movement speed
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	float CrouchMovementSpeed;
+
+	// Current half height of the player capsule
+	float CurrentCapsuleHalfHeight;
+
+	// Half height of the capsule when not crouching
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	float StandingCapsuleHalfHeight;
+
+	// Half height of the capsule when crouching
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	float CrouchingCapsuleHalfHeight;
+
+	// Ground friction while not crouching
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	float BaseGroundFriction;
+
+	// Ground friction while crouching
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	float CrouchingGroundFriction;
+
+	// Used for knowing when the aiming button is pressed
+	bool bAimingButtonPressed;
+
 public:
 	// Returns CameraBoom subobject
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -308,4 +396,7 @@ public:
 	FVector GetCameraInterpLocation();
 
 	void GetPickupItem(AItem* Item);
+
+	FORCEINLINE ECombatState GetCombatState() const { return CombatState; }
+	FORCEINLINE bool GetCrouching() const { return bCrouching; }
 };
