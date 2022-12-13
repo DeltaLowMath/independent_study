@@ -30,6 +30,15 @@ enum class EItemState : uint8
 	EIR_MAX UMETA(DisplayName = "DefaultMAX")
 };
 
+UENUM(BlueprintType)
+enum class EItemType : uint8
+{
+	EIT_Ammo UMETA(DisplayName = "Ammo"),
+	EIT_Weapon UMETA(DisplayName = "Weapon"),
+
+	EIT_MAX UMETA(DisplayName = "DefaultMAX")
+};
+
 UCLASS()
 class SHOOTER_API AItem : public AActor
 {
@@ -61,13 +70,18 @@ protected:
 	void SetActiveStars();
 
 	// Sets properties of the Item's components base on State
-	void SetItemProperties(EItemState State);
+	virtual void SetItemProperties(EItemState State);
 
 	// Called when ItemInterpTimer is finished
 	void FinishInterping();
 
 	// Handles item interpolation when in the EquipInterping state
 	void ItemInterp(float DeltaTime);
+
+	// Get interp location based on the item type
+	FVector GetInterpLocation();
+
+	void PlayPickupSound();
 
 public:
 	// Called every frame
@@ -155,6 +169,14 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Properties", meta = (AllowPrivateAccess = true))
 		USoundCue* EquipSound;
 
+	// Enum for the type of item this item is
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Properties", meta = (AllowPrivateAccess = true))
+		EItemType ItemType;
+
+	// Index of the interp location this item is interping to
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = true))
+	int32 InterpLocIndex;
+
 public:
 	FORCEINLINE UWidgetComponent* GetPickupWidget() const { return PickupWidget; }
 	FORCEINLINE USphereComponent* GetAreaSphere() const { return AreaSphere; }
@@ -164,7 +186,11 @@ public:
 	FORCEINLINE USkeletalMeshComponent* GetItemMesh() const { return ItemMesh; }
 	FORCEINLINE USoundCue* GetPickupSound() const { return PickupSound; }
 	FORCEINLINE USoundCue* GetEquipSound() const { return EquipSound; }
+	FORCEINLINE int32 GetItemCount() const { return ItemCount; }
 
 	// Called from the AShooterCharacter class
 	void StartItemCurve(AShooterCharacter* Char);
+
+	// Called in AShooterCharacter::GetPickupItem
+	void PlayEquipSound();
 };
